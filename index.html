@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AK Randall Digital | Sustainable Infrastructure Innovation Systems</title>
+  <script>
+    (() => {
+      const key = "akrd_intro_seen";
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let introSeen = false;
+
+      try {
+        introSeen = localStorage.getItem(key) === "1";
+        if (reducedMotion && !introSeen) localStorage.setItem(key, "1");
+      } catch (error) {
+        console.warn("[intro splash] Storage is unavailable; using the fail-safe first-visit behavior.", error);
+      }
+
+      document.documentElement.classList.add(introSeen || reducedMotion ? "skip-intro" : "intro-pending");
+
+      if (!introSeen && !reducedMotion) {
+        window.setTimeout(() => {
+          document.documentElement.classList.remove("intro-pending");
+          document.documentElement.classList.add("skip-intro");
+          try {
+            localStorage.setItem(key, "1");
+          } catch (error) {
+            // The page is already released; persistence is optional in this failure path.
+          }
+        }, 4500);
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/akrandall_logo_pack_transparent/logo-mark-48.png">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script>
+    (() => {
+      const mobile = window.matchMedia("(max-width: 767px)").matches;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (mobile || reducedMotion) return;
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.1/three.min.js";
+      script.async = true;
+      script.onload = () => window.dispatchEvent(new Event("three-ready"));
+      script.onerror = () => {
+        window.__threeLoadFailed = true;
+        console.warn("[hero WebGL] Three.js failed to load; using the static poster fallback.");
+      };
+      document.head.appendChild(script);
+    })();
+  </script>
+</head>
+<body>
+  <div id="intro-splash">
+    <video autoplay muted playsinline preload="auto" aria-hidden="true"
+      data-desktop-webm="assets/akrandall_logo_web_pack/logo-animated-800.webm"
+      data-desktop-mp4="assets/akrandall_logo_web_pack/logo-animated-800.mp4"
+      data-mobile-webm="assets/akrandall_logo_web_pack/logo-animated-mobile-420.webm"
+      data-mobile-mp4="assets/akrandall_logo_web_pack/logo-animated-mobile-420.mp4"></video>
+    <button class="intro-skip" type="button">Skip</button>
+  </div>
+  <noscript><style>#intro-splash { display: none !important; }</style></noscript>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <nav id="nav" role="navigation" aria-label="Main"><div class="container"><div class="nav-inner"><a href="index.html" class="nav-logo" aria-label="AK Randall Digital home"><img src="assets/akrandall_logo_pack_transparent/logo-header-320x120.png" alt="AK Randall Digital"></a><ul class="nav-links" role="list"><li><a href="index.html" aria-current="page">Home</a></li><li><a href="about.html">About</a></li><li><a href="services.html">Services</a></li><li><a href="work.html">Work</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="connect.html">Connect</a></li></ul><button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div></div></nav>
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"><div class="menu-panel"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Connect</a></div></div>
+  <main id="main">
+    <section class="hero" id="hero">
+      <div class="hero-media hero-webgl" data-hero-webgl data-video-src="assets/media/hero/hero-01-provo-aerial.mp4" data-poster-src="assets/media/hero/hero-still-01-provo-trail.jpg" aria-hidden="true">
+        <picture class="hero-fallback-picture">
+          <source media="(max-width: 767px)" srcset="assets/media/hero/hero-still-01-provo-trail-sm.jpg">
+          <img class="hero-img hero-fallback-image" src="assets/media/hero/hero-still-01-provo-trail.jpg" alt="">
+        </picture>
+        <div class="hero-canvas-host" data-hero-canvas></div>
+      </div>
+      <div class="container">
+        <div class="hero-content">
+          <span class="label hero-load">Sustainable Infrastructure Innovation Systems</span>
+          <h1 class="hero-load">Cold RFPs won. Infrastructure standing.</h1>
+          <p class="lead hero-load">Andrew Randall builds government infrastructure pipelines from zero, structures competitive proposals, and creates the digital systems that make 12–18 month B2G execution repeatable.</p>
+          <div class="hero-cta hero-load">
+            <a href="work.html" class="btn-primary">View Infrastructure Proof</a>
+            <a href="connect.html" class="btn-text">Connect <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-bar">
+      <div class="container proof-stats">
+        <div class="stat" data-reveal><strong>$25M+</strong><span>Active Pipeline</span></div>
+        <div class="stat" data-reveal data-delay="70"><strong>30+</strong><span>States Reached</span></div>
+        <div class="stat" data-reveal data-delay="140"><strong>17</strong><span>Years Learning How Deals Win</span></div>
+        <div class="stat" data-reveal data-delay="210"><strong>12–18</strong><span>Month B2G Sales Cycles</span></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container two-col">
+        <div data-reveal>
+          <div class="label">About</div>
+          <div class="photo-frame" data-slot-label="headshot.jpg · Portrait 3:4">
+            <img src="assets/media/Berlin Profile header .jpg" alt="Andrew Randall" loading="lazy" decoding="async" width="300" height="400" onerror="this.parentElement.classList.add('photo-frame--empty'); this.remove()">
+          </div>
+        </div>
+        <div class="about-copy">
+          <div class="section-head" data-reveal>
+            <span class="label">How he learned to win</span>
+            <h2>Every stage of the revenue chain taught a different part of the deal.</h2>
+          </div>
+          <p data-reveal>Retail taught how buyers decide. Call center sales taught how to close with nothing but voice and discipline. Direct sales leadership taught how to create opportunity from zero—and build people who could do it repeatedly.</p>
+          <p data-reveal>Automotive sales showed what a real sales operation looks like at volume, and what it costs when the system breaks. Government infrastructure sales required building and running the entire B2G revenue function alone across long cycles where relationship could never replace process.</p>
+          <p data-reveal>The result is an operator who can pursue a cold, competitive infrastructure RFP worth millions—and build the CRM, quoting, proposal, follow-up, and AI tooling required to do it again.</p>
+          <div class="values-column" data-reveal>
+            <div>Capture before the opportunity is public</div>
+            <div>Proposal strategy under real deadlines</div>
+            <div>Pipeline discipline across long B2G cycles</div>
+            <div>Digital systems built from operating need</div>
+            <div>Physical infrastructure as proof</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section founder-media-section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="label">Field-Ready Operator</span>
+          <h2>Strategy stays close to the field.</h2>
+          <p>A second professional view grounded in site presence, practical execution, and public-facing work.</p>
+        </div>
+        <div class="founder-media-strip">
+          <figure class="media-card media-card--image" data-reveal>
+            <div class="media-card-frame"><img src="assets/media/Berlin Profile header .jpg" alt="Professional profile in a field-ready setting" loading="lazy" decoding="async"></div>
+            <figcaption><span class="media-status">Founder / Profile</span><p>Professional profile · Field-ready operator</p></figcaption>
+          </figure>
+          <figure class="media-card media-card--image" data-reveal data-delay="100">
+            <div class="media-card-frame"><img src="assets/media/converted/berlin-profile-header.jpg" alt="Professional portrait for the infrastructure practice" loading="lazy" decoding="async"></div>
+            <figcaption><span class="media-status">Founder / Profile</span><p>Professional profile · Founder image</p></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="label">B2G Infrastructure Consulting</span>
+          <h2>Win the work before the bid becomes paperwork.</h2>
+          <p>For infrastructure companies with a real product and no systematic way to identify, pursue, position, and close government opportunities.</p>
+        </div>
+        <div class="discipline-list infrastructure-services">
+          <article class="discipline-item discipline-item--lead" data-reveal><strong>Capture &amp; BD Strategy</strong><p>Identify and pursue infrastructure opportunities before they become public bid documents.</p></article>
+          <article class="discipline-item" data-reveal data-delay="60"><strong>Cooperative Contract Positioning</strong><p>Build the documentation, positioning, and operating path required to get on contract—not only bid cold.</p></article>
+          <article class="discipline-item" data-reveal data-delay="120"><strong>RFP &amp; Proposal Strategy</strong><p>Structure the response, evidence, pricing logic, and compliance workflow needed to compete for multi-million-dollar public work.</p></article>
+          <article class="discipline-item" data-reveal data-delay="180"><strong>Pipeline &amp; Relationship Infrastructure</strong><p>CRM, quoting, follow-up, and visibility designed for 12–18 month government sales cycles.</p></article>
+          <article class="discipline-item" data-reveal data-delay="240"><strong>Advisory / Fractional BD</strong><p>Hands-on government growth support for solar, transit, smart-city, EV, and adjacent infrastructure companies.</p></article>
+        </div>
+        <div class="supporting-capabilities" data-reveal>
+          <article><span class="label">Supporting capability</span><h3>Digital Systems + AI</h3><p>Connected workspaces, CRM, quoting tools, automations, proposal workflows, and AI systems built because the pipeline needed them.</p></article>
+          <article><span class="label">Supporting capability</span><h3>Website + Brand Launch</h3><p>Strategic websites, service structure, lead capture, and digital presence for operators who need the market to understand what they actually do.</p></article>
+        </div>
+        <p data-reveal class="cta-inline"><a href="work.html" class="btn-outline">See Infrastructure Proof &rarr;</a></p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="label">Community</span>
+          <h2>Systems work has a public consequence.</h2>
+        </div>
+        <div class="section-stack">
+          <p data-reveal>Andrew's civic work focuses on renewable energy access, practical infrastructure investment, and the relationships required to turn public priorities into action.</p>
+          <p data-reveal>The same principle applies in business and community work: progress depends on visible ownership, connected information, clear follow-through, and systems people can actually use.</p>
+        </div>
+        <div class="focus-grid">
+          <div data-reveal><strong>Sustainability with Reach</strong><p>Supporting renewable energy initiatives that move past awareness and into actual deployment.</p></div>
+          <div data-reveal data-delay="80"><strong>Strategic Connections</strong><p>Connecting builders, funders, and decision-makers around shared goals with real operational consequence.</p></div>
+          <div data-reveal data-delay="160"><strong>Minority Economic Empowerment</strong><p>Expanding access to infrastructure work, government contracts, and ownership through deliberate pathways.</p></div>
+          <div data-reveal data-delay="240"><strong>Infrastructure Equity</strong><p>Directing smart, sustainable infrastructure toward communities with the most to gain from it.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-cta">
+      <div class="container">
+        <h2>Stop running the business through texts, screenshots, and memory.</h2>
+        <a href="connect.html" class="btn-light">Book a Strategy Call &rarr;</a>
+      </div>
+    </section>
+  </main>
+  <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-hero-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Connect</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer>
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
