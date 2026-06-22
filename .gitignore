@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+
+__pycache__/
+*.pyc
+node_modules/
+
+projects - Copy/
+projects-BACKUP-*/
+_Cleanup_Archive_*/
+_AKRandallv2_raw_sources_excluded/
+
+html-BACKUP-lfs-cleanup-2026-06-22/
