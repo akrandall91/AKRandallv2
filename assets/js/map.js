@@ -38,6 +38,9 @@
   // ── Popup content ──────────────────────────────────────────────────────────
   function popupHtml(p) {
     const catLabel = p.category || "Infrastructure";
+    const thumbnail = Array.isArray(p.gallery_images) && p.gallery_images.length
+      ? `<img class="atlas-thumb" src="${escHtml(p.gallery_images[0])}" alt="${escHtml(p.name || p.id)} project documentation">`
+      : "";
     const dealTag = p.cold_rfp_win
       ? `<span class="atlas-tag atlas-tag--cold">Cold RFP Win</span>`
       : p.deal_type
@@ -46,14 +49,16 @@
     const mapsLink = p.google_maps_url
       ? `<a href="${escHtml(p.google_maps_url)}" target="_blank" rel="noopener" class="atlas-maps-link">View on Maps →</a>`
       : "";
+    const galleryLink = `<a href="gallery.html#${encodeURIComponent(p.id)}" class="atlas-gallery-link">View in Gallery →</a>`;
     const desc = p.description ? `<p class="atlas-desc">${escHtml(p.description)}</p>` : "";
     return `
       <div class="atlas-popup">
+        ${thumbnail}
         <span class="atlas-category">${escHtml(catLabel)}</span>
         <strong class="atlas-name">${escHtml(p.name || p.id)}</strong>
         <span class="atlas-loc">${escHtml(p.city_state || "")}</span>
         ${desc}
-        <div class="atlas-meta">${dealTag}${mapsLink}</div>
+        <div class="atlas-meta">${dealTag}${mapsLink}${galleryLink}</div>
       </div>`;
   }
 
@@ -96,7 +101,7 @@
 
     visible.forEach(p => {
       L.marker([p.lat, p.lng], { icon: makeIcon(p.category) })
-        .bindPopup(popupHtml(p), { maxWidth: 260 })
+        .bindPopup(popupHtml(p), { maxWidth: 300 })
         .addTo(map);
     });
 
@@ -146,6 +151,7 @@
     style.textContent = `
       #map { border-radius: 4px; }
       .atlas-popup { font-family: inherit; min-width: 180px; }
+      .atlas-popup .atlas-thumb { display: block; width: calc(100% + 40px); height: 118px; margin: -14px -20px 12px; object-fit: cover; border-radius: 4px 4px 0 0; }
       .atlas-popup .atlas-category { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; }
       .atlas-popup .atlas-name { display: block; font-size: 15px; font-weight: 600; line-height: 1.3; margin-bottom: 2px; }
       .atlas-popup .atlas-loc { display: block; font-size: 12px; color: #6b7280; margin-bottom: 6px; }
@@ -154,7 +160,8 @@
       .atlas-tag { font-size: 11px; padding: 2px 7px; border-radius: 3px; background: #f3f4f6; color: #374151; }
       .atlas-tag--cold { background: #fef3c7; color: #92400e; }
       .atlas-maps-link { font-size: 12px; color: #1e6bb8; text-decoration: none; }
-      .atlas-maps-link:hover { text-decoration: underline; }
+      .atlas-gallery-link { font-size: 12px; color: #1e6bb8; text-decoration: none; font-weight: 600; }
+      .atlas-maps-link:hover, .atlas-gallery-link:hover { text-decoration: underline; }
       .atlas-no-data { padding: 40px; text-align: center; color: #6b7280; font-size: 14px; line-height: 1.6; }
     `;
     document.head.appendChild(style);

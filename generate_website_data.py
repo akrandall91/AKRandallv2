@@ -187,6 +187,23 @@ def load_backstory(project_dir: Path) -> str:
     return ""
 
 
+def load_backstory_full(project_dir: Path) -> str:
+    path = project_dir / "backstory.md"
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8", errors="replace").strip()
+
+
+def gallery_images_for(project_dir: Path) -> list[str]:
+    gallery_dir = PROJECTS_ROOT / "_gallery_candidates_optimized" / project_dir.name
+    if not gallery_dir.exists():
+        return []
+    return [
+        f"assets/media/gallery/{project_dir.name}/{path.name}"
+        for path in sorted(gallery_dir.glob("*.jpg"))
+    ]
+
+
 def find_thumbnail(project_dir: Path) -> str | None:
     IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp"}
     for path in sorted(project_dir.rglob("*")):
@@ -197,9 +214,11 @@ def find_thumbnail(project_dir: Path) -> str | None:
 
 # ── Main export ───────────────────────────────────────────────────────────────
 def build_projects() -> list[dict]:
-    skip = {"_case_study_manager", "Proof_Items"}
     dirs = sorted(
-        [d for d in PROJECTS_ROOT.iterdir() if d.is_dir() and d.name not in skip],
+        [
+            d for d in PROJECTS_ROOT.iterdir()
+            if d.is_dir() and (d / "tags.json").exists()
+        ],
         key=lambda d: d.name.casefold(),
     )
 
@@ -237,6 +256,7 @@ def build_projects() -> list[dict]:
             import datetime
             year = datetime.datetime.fromtimestamp(mtime).year
 
+        gallery_images = gallery_images_for(project_dir)
         projects.append({
             "id": project_dir.name,
             "name": tags.get("official_name") or project_dir.name,
@@ -250,6 +270,9 @@ def build_projects() -> list[dict]:
             "year": year,
             "google_maps_url": tags.get("google_maps_url", ""),
             "description": load_backstory(project_dir),
+            "backstory": load_backstory_full(project_dir),
+            "gallery_images": gallery_images,
+            "documentation_status": "documented" if gallery_images else "in_progress",
         })
 
     return projects
@@ -261,6 +284,7 @@ def write_outputs(projects: list[dict]) -> None:
     OUT_JSON.write_text(
         json.dumps(projects, indent=2, ensure_ascii=False),
         encoding="utf-8",
+        newline="\n",
     )
 
     js_content = (
@@ -270,7 +294,7 @@ def write_outputs(projects: list[dict]) -> None:
         + json.dumps(projects, ensure_ascii=False)
         + ";\n"
     )
-    OUT_JS.write_text(js_content, encoding="utf-8")
+    OUT_JS.write_text(js_content, encoding="utf-8", newline="\n")
 
 
 def main() -> None:
