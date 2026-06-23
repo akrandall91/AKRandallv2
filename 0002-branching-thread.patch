@@ -1,0 +1,301 @@
+From 7d1f8237d83210a0d7ff600aa5e9fe2bb5b2228f Mon Sep 17 00:00:00 2001
+From: Andrew Randall <andrew@akrandall.com>
+Date: Tue, 23 Jun 2026 18:08:23 +0000
+Subject: [PATCH] Replace services.html 3-card grid with branching thread
+ scroll animation
+
+- Implements the branching tree design built in Figma: 3 main paths
+  (Get a Website / Get Organized / Win Government Work) branching into
+  5 real service lines, matching the live nav structure exactly
+- 8 custom inline SVG icons in brand colors (cyan/sage), matching the
+  layered diagonal-stroke DNA of the AK logo mark where used on main paths
+- Scroll-tied lighting: nodes and trunk lines progressively light up
+  as the user scrolls past them, using requestAnimationFrame throttling
+  matching the existing main.js performance pattern
+- Respects prefers-reduced-motion (shows fully-lit static state instead)
+- Mobile breakpoint stacks multi-leaf branches vertically
+- All existing nav anchor IDs (#get-a-website, #get-organized,
+  #win-government-work) preserved so nav links keep working unchanged
+- Zero cost on other pages: thread JS only runs if #threadTree exists
+---
+ assets/css/main.css | 134 ++++++++++++++++++++++++++++++++++++++++++++
+ assets/js/main.js   |  55 ++++++++++++++++++
+ services.html       |  54 ++++++++++++++++--
+ 3 files changed, 238 insertions(+), 5 deletions(-)
+
+diff --git a/assets/css/main.css b/assets/css/main.css
+index aff0b7b..73870dd 100644
+--- a/assets/css/main.css
++++ b/assets/css/main.css
+@@ -2169,3 +2169,137 @@ footer {
+   background: var(--sage);
+   border-radius: 50%;
+ }
++
++/* Branching thread — services hub scroll-tied path/service connector */
++.thread-tree {
++  margin-top: var(--space-7);
++}
++
++.thread-main {
++  display: flex;
++  align-items: center;
++  gap: var(--space-5);
++  padding: var(--space-4) 0;
++}
++
++.thread-node {
++  flex-shrink: 0;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  border-radius: 50%;
++  border: 0.0625rem solid var(--line);
++  background: var(--surface);
++  color: var(--mid-gray);
++  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
++}
++
++.thread-node--main {
++  width: 4.5rem;
++  height: 4.5rem;
++}
++
++.thread-node--leaf {
++  width: 3rem;
++  height: 3rem;
++}
++
++.thread-main.is-lit .thread-node--main {
++  color: var(--cyan);
++  border-color: var(--cyan);
++  background: var(--surface-blue);
++  transform: scale(1.04);
++}
++
++.thread-leaf.is-lit .thread-node--leaf {
++  color: var(--cyan);
++  border-color: var(--cyan);
++  background: var(--surface-blue);
++}
++
++.thread-text .offer-number {
++  display: block;
++  margin-bottom: var(--space-1);
++}
++
++.thread-main .thread-text h3 {
++  color: var(--navy);
++  margin: 0 0 var(--space-1) 0;
++}
++
++.thread-main .thread-text p {
++  margin: 0;
++  color: var(--soft-text);
++}
++
++.thread-leaf .thread-text span {
++  display: block;
++  font-family: var(--font-display);
++  font-weight: 600;
++  color: var(--navy);
++  font-size: 0.9375rem;
++}
++
++.thread-leaf .thread-text a {
++  display: block;
++  font-size: 0.8125rem;
++  color: var(--soft-text);
++  margin-top: 0.125rem;
++}
++
++.thread-leaf .thread-text a:hover {
++  color: var(--cyan);
++}
++
++.thread-branch {
++  display: flex;
++  gap: var(--space-5);
++  padding: var(--space-3) 0 var(--space-6) 2.25rem;
++  margin-bottom: var(--space-4);
++}
++
++.thread-branch--last {
++  margin-bottom: 0;
++}
++
++.thread-branch-line {
++  flex-shrink: 0;
++  width: 0.125rem;
++  background: var(--line);
++  border-radius: 1px;
++  overflow: hidden;
++  align-self: stretch;
++}
++
++.thread-branch-fill {
++  width: 100%;
++  height: 0%;
++  background: var(--cyan);
++  transition: height 0.1s linear;
++}
++
++.thread-leaf {
++  display: flex;
++  align-items: center;
++  gap: var(--space-4);
++  flex: 1;
++  min-width: 0;
++}
++
++@media (max-width: 48rem) {
++  .thread-branch {
++    flex-direction: column;
++    gap: var(--space-4);
++  }
++  .thread-node--main {
++    width: 3.5rem;
++    height: 3.5rem;
++  }
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .thread-node,
++  .thread-branch-fill {
++    transition: none;
++  }
++}
+diff --git a/assets/js/main.js b/assets/js/main.js
+index 4d0f0fe..17fa683 100644
+--- a/assets/js/main.js
++++ b/assets/js/main.js
+@@ -444,6 +444,61 @@ document.addEventListener("DOMContentLoaded", () => {
+ 
+   requestScrollUpdate();
+ 
++  const threadTree = document.getElementById("threadTree");
++  if (threadTree) {
++    const reduceMotionThread = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
++    const mainNodes = [...threadTree.querySelectorAll("[data-thread-main]")];
++    const branches = [...threadTree.querySelectorAll("[data-thread-branch]")];
++
++    if (reduceMotionThread) {
++      mainNodes.forEach((node) => node.classList.add("is-lit"));
++      branches.forEach((branch) => {
++        branch.querySelectorAll("[data-thread-leaf]").forEach((leaf) => leaf.classList.add("is-lit"));
++        const fill = branch.querySelector(".thread-branch-fill");
++        if (fill) fill.style.height = "100%";
++      });
++    } else {
++      const updateThread = () => {
++        const viewportThreshold = window.innerHeight * 0.72;
++
++        mainNodes.forEach((node) => {
++          const rect = node.getBoundingClientRect();
++          node.classList.toggle("is-lit", rect.top < viewportThreshold);
++        });
++
++        branches.forEach((branch) => {
++          const leaves = [...branch.querySelectorAll("[data-thread-leaf]")];
++          leaves.forEach((leaf) => {
++            const rect = leaf.getBoundingClientRect();
++            leaf.classList.toggle("is-lit", rect.top < viewportThreshold);
++          });
++
++          const line = branch.querySelector(".thread-branch-line");
++          const fill = branch.querySelector(".thread-branch-fill");
++          if (line && fill) {
++            const lineRect = line.getBoundingClientRect();
++            const visible = viewportThreshold - lineRect.top;
++            const pct = Math.max(0, Math.min(1, visible / lineRect.height));
++            fill.style.height = `${pct * 100}%`;
++          }
++        });
++      };
++
++      let threadFrame = null;
++      const requestThreadUpdate = () => {
++        if (threadFrame) return;
++        threadFrame = requestAnimationFrame(() => {
++          threadFrame = null;
++          updateThread();
++        });
++      };
++
++      window.addEventListener("scroll", requestThreadUpdate, { passive: true });
++      window.addEventListener("resize", requestThreadUpdate, { passive: true });
++      requestThreadUpdate();
++    }
++  }
++
+   const motionTargets = document.querySelector(
+     "[data-split-heading], .proof-stats, [data-values-pin], " +
+     "[data-service-steps], [data-draw-border], .pipeline-section, .day-night-section, " +
+diff --git a/services.html b/services.html
+index ae80dcf..b44cc17 100644
+--- a/services.html
++++ b/services.html
+@@ -13,11 +13,55 @@
+   <div class="menu-overlay" id="menuOverlay" aria-hidden="true"><div class="menu-panel"><a href="services.html#get-a-website">Get a Website</a><a href="services.html#get-organized">Get Organized</a><a href="services.html#win-government-work">Win Government Work</a></div></div>
+   <main id="main">
+     <section class="page-hero"><div class="container"><span class="label">Services</span><h1 data-split-heading>Start with what's actually broken.</h1><p class="lead">Pick the problem that sounds like yours. Everything underneath it is built to fix that specific thing — not a generic package.</p></div></section>
+-    <section class="page-section"><div class="container"><div class="section-head" data-reveal><span class="label">Three Paths</span><h2>Choose the sentence that sounds like you.</h2></div><div class="offer-grid route-grid interactive-card-row">
+-      <article class="offer-card interactive-card" id="get-a-website" data-reveal><span class="offer-number">“I need to look credible.”</span><h3>Get a Website</h3><p>A real website, written and built around what you actually do — not a template that could belong to anyone.</p><div class="offer-links"><a href="services-website-builds.html">Website Builds →</a></div></article>
+-      <article class="offer-card interactive-card" id="get-organized" data-reveal data-delay="80"><span class="offer-number">“I need my business organized.”</span><h3>Get Organized</h3><p>Two ways in, depending on what's actually slowing you down:</p><div class="offer-links"><a href="services-ai-automation.html">AI + Automation — get repetitive work off your plate →</a><a href="services-digital-systems.html">Digital Systems &amp; Operations — organize the middle, between interest and getting paid →</a></div></article>
+-      <article class="offer-card interactive-card" id="win-government-work" data-reveal data-delay="160"><span class="offer-number">“I need to win bigger work.”</span><h3>Win Government Work</h3><p>Two ways in, depending on where you are in the process:</p><div class="offer-links"><a href="services-government-sales.html">Government Sales Support — the proposal, pipeline, and proof system →</a><a href="services-smart-infrastructure.html">Smart Infrastructure Consulting — turn a strong product into a pursuit government buyers understand →</a></div></article>
+-    </div></div></section>
++    <section class="page-section thread-section"><div class="container"><div class="section-head" data-reveal><span class="label">Three Paths</span><h2>Choose the sentence that sounds like you.</h2></div>
++      <div class="thread-tree" id="threadTree">
++
++        <div class="thread-main" id="get-a-website" data-thread-main>
++          <div class="thread-node thread-node--main"><svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><circle cx="32" cy="32" r="20" fill="none" stroke="currentColor" stroke-width="3"/><ellipse cx="32" cy="32" rx="8" ry="20" fill="none" stroke="currentColor" stroke-width="2.4" opacity="0.6"/><line x1="12" y1="32" x2="52" y2="32" stroke="currentColor" stroke-width="2.4" opacity="0.6"/></svg></div>
++          <div class="thread-text"><span class="offer-number">“I need to look credible.”</span><h3>Get a Website</h3><p>A real website, written and built around what you actually do — not a template that could belong to anyone.</p></div>
++        </div>
++        <div class="thread-branch" data-thread-branch>
++          <div class="thread-branch-line"><div class="thread-branch-fill"></div></div>
++          <div class="thread-leaf" data-thread-leaf>
++            <div class="thread-node thread-node--leaf"><svg viewBox="0 0 40 40" width="22" height="22" aria-hidden="true"><rect x="8" y="10" width="24" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="15" x2="32" y2="15" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12.5" r="0.8" fill="currentColor"/><line x1="14" y1="32" x2="26" y2="32" stroke="currentColor" stroke-width="2" opacity="0.6"/></svg></div>
++            <div class="thread-text"><span>Website Builds</span><a href="services-website-builds.html">Hand-built, conversion-focused →</a></div>
++          </div>
++        </div>
++
++        <div class="thread-main" id="get-organized" data-thread-main>
++          <div class="thread-node thread-node--main"><svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><circle cx="22" cy="22" r="5" fill="currentColor"/><circle cx="42" cy="22" r="5" fill="currentColor" opacity="0.6"/><circle cx="22" cy="42" r="5" fill="currentColor" opacity="0.6"/><circle cx="42" cy="42" r="5" fill="currentColor"/><line x1="27" y1="22" x2="37" y2="22" stroke="currentColor" stroke-width="2" opacity="0.4"/><line x1="22" y1="27" x2="22" y2="37" stroke="currentColor" stroke-width="2" opacity="0.4"/><line x1="42" y1="27" x2="42" y2="37" stroke="currentColor" stroke-width="2" opacity="0.4"/><line x1="27" y1="42" x2="37" y2="42" stroke="currentColor" stroke-width="2" opacity="0.4"/></svg></div>
++          <div class="thread-text"><span class="offer-number">“I need my business organized.”</span><h3>Get Organized</h3><p>Two ways in, depending on what's actually slowing you down.</p></div>
++        </div>
++        <div class="thread-branch" data-thread-branch>
++          <div class="thread-branch-line"><div class="thread-branch-fill"></div></div>
++          <div class="thread-leaf" data-thread-leaf>
++            <div class="thread-node thread-node--leaf"><svg viewBox="0 0 40 40" width="22" height="22" aria-hidden="true"><rect x="8" y="14" width="24" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="22" r="2" fill="currentColor"/><circle cx="25" cy="22" r="2" fill="currentColor"/><line x1="16" y1="9" x2="16" y2="14" stroke="currentColor" stroke-width="2" opacity="0.6"/><line x1="24" y1="9" x2="24" y2="14" stroke="currentColor" stroke-width="2" opacity="0.6"/></svg></div>
++            <div class="thread-text"><span>AI + Automation</span><a href="services-ai-automation.html">Get repetitive work off your plate →</a></div>
++          </div>
++          <div class="thread-leaf" data-thread-leaf>
++            <div class="thread-node thread-node--leaf"><svg viewBox="0 0 40 40" width="22" height="22" aria-hidden="true"><circle cx="20" cy="20" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="8" x2="20" y2="13" stroke="currentColor" stroke-width="2"/><line x1="20" y1="27" x2="20" y2="32" stroke="currentColor" stroke-width="2"/><line x1="8" y1="20" x2="13" y2="20" stroke="currentColor" stroke-width="2"/><line x1="27" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="2"/><line x1="12" y1="12" x2="15.5" y2="15.5" stroke="currentColor" stroke-width="1.8" opacity="0.6"/><line x1="28" y1="12" x2="24.5" y2="15.5" stroke="currentColor" stroke-width="1.8" opacity="0.6"/><line x1="12" y1="28" x2="15.5" y2="24.5" stroke="currentColor" stroke-width="1.8" opacity="0.6"/><line x1="28" y1="28" x2="24.5" y2="24.5" stroke="currentColor" stroke-width="1.8" opacity="0.6"/></svg></div>
++            <div class="thread-text"><span>Digital Systems &amp; Operations</span><a href="services-digital-systems.html">Organize the middle, between interest and getting paid →</a></div>
++          </div>
++        </div>
++
++        <div class="thread-main" id="win-government-work" data-thread-main>
++          <div class="thread-node thread-node--main"><svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><path d="M32 12 L50 20 L50 30 C50 42 42 50 32 53 C22 50 14 42 14 30 L14 20 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 30 L30 36 L42 22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/></svg></div>
++          <div class="thread-text"><span class="offer-number">“I need to win bigger work.”</span><h3>Win Government Work</h3><p>Two ways in, depending on where you are in the process.</p></div>
++        </div>
++        <div class="thread-branch thread-branch--last" data-thread-branch>
++          <div class="thread-branch-line"><div class="thread-branch-fill"></div></div>
++          <div class="thread-leaf" data-thread-leaf>
++            <div class="thread-node thread-node--leaf"><svg viewBox="0 0 40 40" width="22" height="22" aria-hidden="true"><path d="M10 32 L10 16 L20 9 L30 16 L30 32 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="22" width="6" height="10" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.6"/><circle cx="15" cy="20" r="1.4" fill="currentColor"/><circle cx="25" cy="20" r="1.4" fill="currentColor"/></svg></div>
++            <div class="thread-text"><span>Government Sales Support</span><a href="services-government-sales.html">The proposal, pipeline, and proof system →</a></div>
++          </div>
++          <div class="thread-leaf" data-thread-leaf>
++            <div class="thread-node thread-node--leaf"><svg viewBox="0 0 40 40" width="22" height="22" aria-hidden="true"><line x1="20" y1="8" x2="20" y2="32" stroke="currentColor" stroke-width="2.2"/><line x1="12" y1="32" x2="28" y2="32" stroke="currentColor" stroke-width="2.2"/><line x1="20" y1="8" x2="13" y2="16" stroke="currentColor" stroke-width="2.2" opacity="0.6"/><line x1="20" y1="8" x2="27" y2="16" stroke="currentColor" stroke-width="2.2" opacity="0.6"/><line x1="13" y1="16" x2="13" y2="25" stroke="currentColor" stroke-width="2.2" opacity="0.6"/><line x1="27" y1="16" x2="27" y2="25" stroke="currentColor" stroke-width="2.2" opacity="0.6"/></svg></div>
++            <div class="thread-text"><span>Smart Infrastructure Consulting</span><a href="services-smart-infrastructure.html">Turn a strong product into a pursuit government buyers understand →</a></div>
++          </div>
++        </div>
++
++      </div>
++    </div></section>
+   </main>
+   <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-footer-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="gallery.html">Gallery</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Book a Call</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer>
+   <script src="assets/js/main.js" defer></script>
+-- 
+2.43.0
+

@@ -444,6 +444,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
   requestScrollUpdate();
 
+  const threadTree = document.getElementById("threadTree");
+  if (threadTree) {
+    const reduceMotionThread = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mainNodes = [...threadTree.querySelectorAll("[data-thread-main]")];
+    const branches = [...threadTree.querySelectorAll("[data-thread-branch]")];
+
+    if (reduceMotionThread) {
+      mainNodes.forEach((node) => node.classList.add("is-lit"));
+      branches.forEach((branch) => {
+        branch.querySelectorAll("[data-thread-leaf]").forEach((leaf) => leaf.classList.add("is-lit"));
+        const fill = branch.querySelector(".thread-branch-fill");
+        if (fill) fill.style.height = "100%";
+      });
+    } else {
+      const updateThread = () => {
+        const viewportThreshold = window.innerHeight * 0.72;
+
+        mainNodes.forEach((node) => {
+          const rect = node.getBoundingClientRect();
+          node.classList.toggle("is-lit", rect.top < viewportThreshold);
+        });
+
+        branches.forEach((branch) => {
+          const leaves = [...branch.querySelectorAll("[data-thread-leaf]")];
+          leaves.forEach((leaf) => {
+            const rect = leaf.getBoundingClientRect();
+            leaf.classList.toggle("is-lit", rect.top < viewportThreshold);
+          });
+
+          const line = branch.querySelector(".thread-branch-line");
+          const fill = branch.querySelector(".thread-branch-fill");
+          if (line && fill) {
+            const lineRect = line.getBoundingClientRect();
+            const visible = viewportThreshold - lineRect.top;
+            const pct = Math.max(0, Math.min(1, visible / lineRect.height));
+            fill.style.height = `${pct * 100}%`;
+          }
+        });
+      };
+
+      let threadFrame = null;
+      const requestThreadUpdate = () => {
+        if (threadFrame) return;
+        threadFrame = requestAnimationFrame(() => {
+          threadFrame = null;
+          updateThread();
+        });
+      };
+
+      window.addEventListener("scroll", requestThreadUpdate, { passive: true });
+      window.addEventListener("resize", requestThreadUpdate, { passive: true });
+      requestThreadUpdate();
+    }
+  }
+
   const motionTargets = document.querySelector(
     "[data-split-heading], .proof-stats, [data-values-pin], " +
     "[data-service-steps], [data-draw-border], .pipeline-section, .day-night-section, " +

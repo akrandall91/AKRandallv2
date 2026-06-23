@@ -2169,3 +2169,137 @@ footer {
   background: var(--sage);
   border-radius: 50%;
 }
+
+/* Branching thread — services hub scroll-tied path/service connector */
+.thread-tree {
+  margin-top: var(--space-7);
+}
+
+.thread-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+}
+
+.thread-node {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0.0625rem solid var(--line);
+  background: var(--surface);
+  color: var(--mid-gray);
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+.thread-node--main {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.thread-node--leaf {
+  width: 3rem;
+  height: 3rem;
+}
+
+.thread-main.is-lit .thread-node--main {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: var(--surface-blue);
+  transform: scale(1.04);
+}
+
+.thread-leaf.is-lit .thread-node--leaf {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: var(--surface-blue);
+}
+
+.thread-text .offer-number {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.thread-main .thread-text h3 {
+  color: var(--navy);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.thread-main .thread-text p {
+  margin: 0;
+  color: var(--soft-text);
+}
+
+.thread-leaf .thread-text span {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.9375rem;
+}
+
+.thread-leaf .thread-text a {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--soft-text);
+  margin-top: 0.125rem;
+}
+
+.thread-leaf .thread-text a:hover {
+  color: var(--cyan);
+}
+
+.thread-branch {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-3) 0 var(--space-6) 2.25rem;
+  margin-bottom: var(--space-4);
+}
+
+.thread-branch--last {
+  margin-bottom: 0;
+}
+
+.thread-branch-line {
+  flex-shrink: 0;
+  width: 0.125rem;
+  background: var(--line);
+  border-radius: 1px;
+  overflow: hidden;
+  align-self: stretch;
+}
+
+.thread-branch-fill {
+  width: 100%;
+  height: 0%;
+  background: var(--cyan);
+  transition: height 0.1s linear;
+}
+
+.thread-leaf {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 48rem) {
+  .thread-branch {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .thread-node--main {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thread-node,
+  .thread-branch-fill {
+    transition: none;
+  }
+}
