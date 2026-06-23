@@ -38,6 +38,29 @@
   function initialize() {
     const mm = window.gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      const animateNumberedSequence = ({
+        section,
+        items,
+        from,
+        end
+      }) => {
+        if (!section || !items.length || !window.ScrollTrigger) return;
+        window.gsap.fromTo(items, from, {
+          x: 0,
+          xPercent: 0,
+          y: 0,
+          stagger: 0.8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top top+=90",
+            end,
+            pin: true,
+            scrub: true
+          }
+        });
+      };
+
       document.querySelectorAll("[data-split-heading]").forEach((heading) => {
         if (!window.SplitText) return;
         const split = new window.SplitText(heading, { type: "words" });
@@ -84,19 +107,11 @@
 
       document.querySelectorAll("[data-service-steps]").forEach((section) => {
         const steps = section.querySelectorAll(".system-row");
-        window.gsap.fromTo(steps, {
-          y: 64
-        }, {
-          y: 0,
-          stagger: 0.8,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top top+=90",
-            end: "+=1200",
-            pin: true,
-            scrub: true
-          }
+        animateNumberedSequence({
+          section,
+          items: steps,
+          from: { y: 64 },
+          end: "+=1200"
         });
       });
 
@@ -124,12 +139,11 @@
 
       const pipeline = document.querySelector(".pipeline-section");
       if (pipeline) {
-        window.gsap.from(pipeline.querySelectorAll(".pipeline-card"), {
-          opacity: 0.12,
-          xPercent: 35,
-          stagger: 0.8,
-          ease: "none",
-          scrollTrigger: { trigger: pipeline, start: "top top+=90", end: "+=1400", pin: true, scrub: true }
+        animateNumberedSequence({
+          section: pipeline,
+          items: pipeline.querySelectorAll(".pipeline-card"),
+          from: { xPercent: 35 },
+          end: "+=1400"
         });
       }
 
