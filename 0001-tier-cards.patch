@@ -1,0 +1,122 @@
+From d468d334e6b8c7f98574de8f06c192024d361ca4 Mon Sep 17 00:00:00 2001
+From: Andrew Randall <andrew@akrandall.com>
+Date: Tue, 23 Jun 2026 16:58:01 +0000
+Subject: [PATCH] Add Starter/Growth/Custom engagement tier cards to all 5
+ service pages
+
+- Reuses existing .offer-card shell and .offer-card--lead highlight modifier
+- New .tier-feature-list CSS for the bullet list inside each card (uses --space, --sage tokens)
+- Inserted between 'How It Works' and 'Proof' sections on each page
+- Copy sourced from Brand Hub nested offers (AI Workflow System, Government Growth System,
+  Business Command Center, Launch the Brand) and built first as a Figma component set
+---
+ assets/css/main.css                | 26 ++++++++++++++++++++++++++
+ services-ai-automation.html        |  2 +-
+ services-digital-systems.html      |  2 +-
+ services-government-sales.html     |  2 +-
+ services-smart-infrastructure.html |  2 +-
+ services-website-builds.html       |  2 +-
+ 6 files changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/assets/css/main.css b/assets/css/main.css
+index 76bcf40..aff0b7b 100644
+--- a/assets/css/main.css
++++ b/assets/css/main.css
+@@ -2143,3 +2143,29 @@ footer {
+   .gallery-modal-images { grid-template-columns: 1fr; }
+   .gallery-modal-images img { height: auto; max-height: 24rem; }
+ }
++
++/* Engagement tier cards (Starter / Growth / Custom) — reuses .offer-card shell */
++.tier-feature-list {
++  display: grid;
++  gap: var(--space-2);
++  padding-left: 0;
++  margin: 0;
++  list-style: none;
++}
++
++.tier-feature-list li {
++  position: relative;
++  padding-left: var(--space-4);
++  font-size: 0.8125rem;
++}
++
++.tier-feature-list li::before {
++  content: "";
++  position: absolute;
++  left: 0;
++  top: 0.5em;
++  width: 0.375rem;
++  height: 0.375rem;
++  background: var(--sage);
++  border-radius: 50%;
++}
+diff --git a/services-ai-automation.html b/services-ai-automation.html
+index ffc1c8e..24a16f9 100644
+--- a/services-ai-automation.html
++++ b/services-ai-automation.html
+@@ -17,7 +17,7 @@
+       <div class="system-row" data-reveal data-delay="70"><div class="system-number">02</div><div><div class="system-title">Build the Context Layer</div><p>Organize the documents, prompts, templates, databases, and rules the workflow needs to produce dependable output.</p></div></div>
+       <div class="system-row" data-reveal data-delay="140"><div class="system-number">03</div><div><div class="system-title">Connect and Test</div><p>Automate the right handoffs, test edge cases, and document how people review, correct, and improve the system.</p></div></div>
+     </div></div></section>
+-    <section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Personal Budget Dashboard</h2><p>A real AI-assisted tool built start-to-finish in one working session, turning scattered financial inputs into a usable daily view.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
++    <section class="page-section"><div class="container"><div class="section-head" data-reveal><span class="label">Engagement Tiers</span><h2>Three ways in, depending on where you start.</h2></div><div class="offer-grid tier-grid"><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">STARTER</span><h3>AI Workflow Audit</h3><p>Identify the 1-3 repetitive tasks costing the most time and map an automation path.</p><ul class="tier-feature-list"><li>Workflow mapping session</li><li>Tool fit assessment</li><li>Quick-win automation plan</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier offer-card--lead" data-reveal><span class="offer-number">GROWTH</span><h3>AI Workflow System</h3><p>Custom AI workflows for proposal drafting, CRM updates, and follow-up sequences.</p><ul class="tier-feature-list"><li>Proposal drafting automation</li><li>CRM update workflows</li><li>Document organization system</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">CUSTOM</span><h3>Full Automation Build</h3><p>End-to-end automation across the business, built around the specific repetitive work it does.</p><ul class="tier-feature-list"><li>Multi-tool integration</li><li>Internal knowledge management</li><li>Ongoing optimization support</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article></div></div></section><section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Personal Budget Dashboard</h2><p>A real AI-assisted tool built start-to-finish in one working session, turning scattered financial inputs into a usable daily view.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
+   </main>
+   <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-footer-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="gallery.html">Gallery</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Book a Call</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer><script src="assets/js/main.js" defer></script>
+ </body></html>
+diff --git a/services-digital-systems.html b/services-digital-systems.html
+index 1a55736..e49ea6d 100644
+--- a/services-digital-systems.html
++++ b/services-digital-systems.html
+@@ -16,7 +16,7 @@
+       <div class="system-row" data-reveal data-delay="70"><div class="system-number">02</div><div><div class="system-title">Build</div><p>Connect the CRM, files, forms, quotes, tasks, dashboards, and automations around that path.</p></div></div>
+       <div class="system-row" data-reveal data-delay="140"><div class="system-number">03</div><div><div class="system-title">Test</div><p>Run real work through the system, fix weak handoffs, and document how the team uses it.</p></div></div>
+     </div></div></section>
+-    <section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Government Operations Platform</h2><p>An enterprise-grade operations system built solo, without a team or dedicated budget.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
++    <section class="page-section"><div class="container"><div class="section-head" data-reveal><span class="label">Engagement Tiers</span><h2>Three ways in, depending on where you start.</h2></div><div class="offer-grid tier-grid"><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">STARTER</span><h3>Operations Map</h3><p>Follow the real path from first interest through delivery, invoicing, and follow-up.</p><ul class="tier-feature-list"><li>Process mapping session</li><li>Tool audit</li><li>Quick-fix recommendations</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier offer-card--lead" data-reveal><span class="offer-number">GROWTH</span><h3>Business Command Center</h3><p>One connected system — website, lead capture, CRM, pipeline dashboards, and automations.</p><ul class="tier-feature-list"><li>CRM + pipeline dashboards</li><li>Internal workflow automation</li><li>Built around how you operate</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">CUSTOM</span><h3>Full Operating System</h3><p>Enterprise-grade operations system, tested with real work and documented for the team.</p><ul class="tier-feature-list"><li>Role-based access + workflows</li><li>Cross-tool automation</li><li>Documented operating manual</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article></div></div></section><section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Government Operations Platform</h2><p>An enterprise-grade operations system built solo, without a team or dedicated budget.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
+   </main>
+   <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-footer-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="gallery.html">Gallery</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Book a Call</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer><script src="assets/js/main.js" defer></script>
+ </body></html>
+diff --git a/services-government-sales.html b/services-government-sales.html
+index 500d56a..8eaafc3 100644
+--- a/services-government-sales.html
++++ b/services-government-sales.html
+@@ -16,7 +16,7 @@
+       <div class="system-row" data-reveal data-delay="70"><div class="system-number">02</div><div><div class="system-title">Build</div><p>Organize the proposal, proof, pricing logic, compliance work, and capture plan.</p></div></div>
+       <div class="system-row" data-reveal data-delay="140"><div class="system-number">03</div><div><div class="system-title">Track</div><p>Keep every opportunity, relationship, next action, and deadline visible through the full cycle.</p></div></div>
+     </div></div></section>
+-    <section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Bid Command Center</h2><p>Ten production versions with real submitted outputs across multiple transit and government procurements.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
++    <section class="page-section"><div class="container"><div class="section-head" data-reveal><span class="label">Engagement Tiers</span><h2>Three ways in, depending on where you start.</h2></div><div class="offer-grid tier-grid"><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">STARTER</span><h3>Revenue Flow Audit</h3><p>A structured diagnostic of bid tracking, follow-up, and proposal speed gaps.</p><ul class="tier-feature-list"><li>Pipeline visibility review</li><li>Proposal speed assessment</li><li>Compliance gap check</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier offer-card--lead" data-reveal><span class="offer-number">GROWTH</span><h3>Government Growth System</h3><p>Bid tracking, proposal organization, agency contact management, and follow-up reminders.</p><ul class="tier-feature-list"><li>Bid tracking + proposal org</li><li>Agency contact management</li><li>Cooperative contract docs</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">CUSTOM</span><h3>Full B2G Pipeline Build</h3><p>Complete government-facing revenue infrastructure, built on direct procurement experience.</p><ul class="tier-feature-list"><li>Vendor portal management</li><li>Compliance administration</li><li>Multi-state pipeline scaling</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article></div></div></section><section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Bid Command Center</h2><p>Ten production versions with real submitted outputs across multiple transit and government procurements.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
+   </main>
+   <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-footer-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="gallery.html">Gallery</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Book a Call</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer><script src="assets/js/main.js" defer></script>
+ </body></html>
+diff --git a/services-smart-infrastructure.html b/services-smart-infrastructure.html
+index 4b2f360..8796c1d 100644
+--- a/services-smart-infrastructure.html
++++ b/services-smart-infrastructure.html
+@@ -16,7 +16,7 @@
+       <div class="system-row" data-reveal data-delay="70"><div class="system-number">02</div><div><div class="system-title">Shape the Pursuit</div><p>Connect stakeholder needs, technical fit, site evidence, competitive positioning, and a disciplined capture plan.</p></div></div>
+       <div class="system-row" data-reveal data-delay="140"><div class="system-number">03</div><div><div class="system-title">Build Repeatability</div><p>Turn individual opportunities into visible pipeline, reusable evidence, consistent follow-up, and clearer handoffs.</p></div></div>
+     </div></div></section>
+-    <section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Solar Viability Scoping Tool</h2><p>A working tool that replaces a multi-hour manual calculation with one address entry.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
++    <section class="page-section"><div class="container"><div class="section-head" data-reveal><span class="label">Engagement Tiers</span><h2>Three ways in, depending on where you start.</h2></div><div class="offer-grid tier-grid"><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">STARTER</span><h3>Infrastructure BD Review</h3><p>A focused review of how your technical capability is currently being positioned to buyers.</p><ul class="tier-feature-list"><li>Positioning gap assessment</li><li>Target market review</li><li>Messaging quick wins</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier offer-card--lead" data-reveal><span class="offer-number">GROWTH</span><h3>Smart Infrastructure Strategy</h3><p>Strategy and BD support for solar, transit, smart city, and public infrastructure companies.</p><ul class="tier-feature-list"><li>Go-to-market strategy</li><li>Public-sector positioning</li><li>Pilot program framing</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">CUSTOM</span><h3>Full BD Partnership</h3><p>Ongoing strategic support built on direct experience in solar and transit infrastructure sales.</p><ul class="tier-feature-list"><li>Municipal relationship building</li><li>Pilot-to-scale roadmap</li><li>Co-op contract positioning</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article></div></div></section><section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>Solar Viability Scoping Tool</h2><p>A working tool that replaces a multi-hour manual calculation with one address entry.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
+   </main>
+   <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-footer-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="gallery.html">Gallery</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Book a Call</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer><script src="assets/js/main.js" defer></script>
+ </body></html>
+diff --git a/services-website-builds.html b/services-website-builds.html
+index 620cbcc..c9ecf19 100644
+--- a/services-website-builds.html
++++ b/services-website-builds.html
+@@ -16,7 +16,7 @@
+       <div class="system-row" data-reveal data-delay="70"><div class="system-number">02</div><div><div class="system-title">Build the Site</div><p>Create the page architecture, strategic copy, identity direction, responsive interface, and lead-capture flow.</p></div></div>
+       <div class="system-row" data-reveal data-delay="140"><div class="system-number">03</div><div><div class="system-title">Launch Cleanly</div><p>Version-control the project, deploy it, connect the domain, verify assets, and hand over a maintainable foundation.</p></div></div>
+     </div></div></section>
+-    <section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>You're looking at it.</h2><p>The AK Randall Digital site is hand-built, version-controlled, responsive, and deployed without a template builder.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
++    <section class="page-section"><div class="container"><div class="section-head" data-reveal><span class="label">Engagement Tiers</span><h2>Three ways in, depending on where you start.</h2></div><div class="offer-grid tier-grid"><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">STARTER</span><h3>Launch Page</h3><p>A single, sharp landing page with strategic copy and a clear call to action.</p><ul class="tier-feature-list"><li>One-page hand-built site</li><li>Strategic copy pass</li><li>Lead capture form</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier offer-card--lead" data-reveal><span class="offer-number">GROWTH</span><h3>Launch the Brand</h3><p>Website, strategic copy, service-page structure, lead capture, and basic brand identity.</p><ul class="tier-feature-list"><li>Multi-page site build</li><li>Service-page structure</li><li>Basic brand identity</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article><article class="offer-card offer-card--tier" data-reveal><span class="offer-number">CUSTOM</span><h3>Full Brand + Site Build</h3><p>Complete first live digital presence, version-controlled and deployed on a custom domain.</p><ul class="tier-feature-list"><li>GitHub-hosted, custom domain</li><li>Conversion-focused design</li><li>Ongoing copy + brand support</li></ul><div class="offer-links"><a href="connect.html" class="btn-text">Book a Strategy Call →</a></div></article></div></div></section><section class="page-section"><div class="container section-stack" data-reveal><span class="label">Proof</span><h2>You're looking at it.</h2><p>The AK Randall Digital site is hand-built, version-controlled, responsive, and deployed without a template builder.</p><p><a href="connect.html" class="btn-primary">Book a Strategy Call</a></p></div></section>
+   </main>
+   <footer><div class="container"><div class="footer-inner"><div class="footer-logo"><img src="assets/akrandall_logo_pack_transparent/logo-footer-800.png" alt="AK Randall Digital"></div><nav class="footer-nav" aria-label="Footer navigation"><a href="about.html">About</a><a href="services.html">Services</a><a href="work.html">Work</a><a href="gallery.html">Gallery</a><a href="portfolio.html">Portfolio</a><a href="connect.html">Book a Call</a></nav><p class="footer-copy">&copy; 2026 Andrew Randall. All rights reserved.</p></div></div></footer><script src="assets/js/main.js" defer></script>
+ </body></html>
+-- 
+2.43.0
+
