@@ -65,12 +65,16 @@
 
   function applyFilters() {
     let visible = 0;
-    grid.querySelectorAll(".gallery-card").forEach(card => {
-      const show = (activeCategory === "all" || card.dataset.category === activeCategory)
-        && (activeState === "all" || card.dataset.state === activeState);
-      card.hidden = !show;
-      if (show) visible += 1;
-    });
+    const update = () => {
+      grid.querySelectorAll(".gallery-card").forEach(card => {
+        const show = (activeCategory === "all" || card.dataset.category === activeCategory)
+          && (activeState === "all" || card.dataset.state === activeState);
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+    };
+    if (window.akrdFlipFilter) window.akrdFlipFilter(grid, update);
+    else update();
     count.textContent = `${visible} of ${projects.length} projects`;
   }
 

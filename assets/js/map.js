@@ -16,6 +16,7 @@
 
   // ── Map state ──────────────────────────────────────────────────────────────
   let map = null;
+  let routeLayer = null;
   let allProjects = [];
   let activeCategory = "all";
   let activeYear = "all";
@@ -90,7 +91,13 @@
   // ── Render markers based on active filters ─────────────────────────────────
   function renderMarkers() {
     if (!map) return;
+    const markerElements = [...document.querySelectorAll(".leaflet-marker-icon")];
+    const flipState = window.Flip && markerElements.length ? window.Flip.getState(markerElements) : null;
     map.eachLayer(layer => { if (layer instanceof L.Marker) map.removeLayer(layer); });
+    if (routeLayer) {
+      map.removeLayer(routeLayer);
+      routeLayer = null;
+    }
 
     const visible = allProjects.filter(p => {
       if (!p.lat || !p.lng) return false;
@@ -104,6 +111,30 @@
         .bindPopup(popupHtml(p), { maxWidth: 300 })
         .addTo(map);
     });
+
+    if (visible.length > 1) {
+      routeLayer = L.polyline(
+        visible.map(p => [p.lat, p.lng]),
+        { color: "#2277d1", weight: 1.5, opacity: 0.38, dashArray: "5 8", interactive: false }
+      ).addTo(map);
+      const drawRoute = () => {
+        const path = routeLayer && routeLayer.getElement();
+        if (path && window.gsap && window.DrawSVGPlugin) {
+          window.gsap.fromTo(path, { drawSVG: 0 }, { drawSVG: "100%", duration: 1, ease: "power2.out" });
+        }
+      };
+      window.requestAnimationFrame(drawRoute);
+      window.addEventListener("akrd-motion-ready", drawRoute, { once: true });
+    }
+
+    if (flipState && window.Flip) {
+      window.requestAnimationFrame(() => window.Flip.from(flipState, {
+        targets: ".leaflet-marker-icon",
+        duration: 0.55,
+        ease: "power2.inOut",
+        fade: true
+      }));
+    }
 
     const countEl = document.getElementById("map-count");
     if (countEl) {

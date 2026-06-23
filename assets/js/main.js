@@ -119,6 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", requestScrollUpdate, { passive: true });
   window.addEventListener("resize", requestScrollUpdate, { passive: true });
 
+  if (document.querySelector(".field-sequence-section")) {
+    document.querySelectorAll(
+      ".media-card, .infrastructure-proof-primary, .case-study-card, .comparison-card, .proof-photo"
+    ).forEach((card) => card.setAttribute("data-reveal-3d", ""));
+  }
+
   const revealItems = [...document.querySelectorAll("[data-reveal]")];
   revealItems.forEach((element) => {
     const delay = Math.max(0, Number.parseInt(element.dataset.delay || "0", 10) || 0);
@@ -307,9 +313,14 @@ document.addEventListener("DOMContentLoaded", () => {
           video.poster = hero.dataset.posterSrc;
           video.muted = true;
           video.defaultMuted = true;
+          video.autoplay = true;
           video.loop = true;
           video.playsInline = true;
           video.preload = "auto";
+          video.setAttribute("autoplay", "");
+          video.setAttribute("muted", "");
+          video.setAttribute("loop", "");
+          video.setAttribute("playsinline", "");
           video.setAttribute("aria-hidden", "true");
 
           let mesh = null;
@@ -432,4 +443,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   requestScrollUpdate();
+
+  const motionTargets = document.querySelector(
+    "[data-split-heading], .proof-stats, [data-values-pin], " +
+    "[data-service-steps], [data-draw-border], .pipeline-section, .day-night-section, " +
+    "#gallery-grid, .portfolio-grid, #map"
+  );
+  if (motionTargets) {
+    const motionScript = document.createElement("script");
+    motionScript.src = "assets/js/motion.js";
+    motionScript.defer = true;
+    document.body.append(motionScript);
+  }
 });

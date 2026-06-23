@@ -1241,10 +1241,8 @@ blockquote {
 
 .filter-btn:hover,
 .year-btn:hover,
-.schedule-type:hover,
 .filter-btn.active,
-.year-btn.active,
-.schedule-type.active {
+.year-btn.active {
   border-color: var(--cyan);
   background: var(--cyan);
   color: white;
@@ -1314,13 +1312,6 @@ blockquote {
   color: var(--mid-gray);
   font-size: 0.72rem;
   line-height: 1.55;
-}
-
-.schedule-type.active .type-title,
-.schedule-type:hover .type-title,
-.schedule-type.active .type-desc,
-.schedule-type:hover .type-desc {
-  color: white;
 }
 
 .calendar-note {
@@ -1504,6 +1495,7 @@ footer {
 .career-step--current h3,
 .offer-card--lead h3,
 .offer-card--lead .offer-number,
+.offer-card--lead p,
 .offer-card--lead a {
   color: white;
 }
@@ -1538,14 +1530,130 @@ footer {
 }
 
 .service-principle {
+  position: relative;
   display: grid;
   align-content: end;
   min-height: 18rem;
   padding: var(--space-6);
 }
 
+.plain-translation {
+  padding: var(--space-4);
+  border-left: 0.2rem solid var(--sage);
+  background: var(--surface-blue);
+}
+
+.hero-support {
+  color: color-mix(in srgb, white 78%, transparent);
+  font-size: 0.8rem;
+}
+
+.belief-section,
+.capacity-section {
+  background: var(--surface-blue);
+}
+
+.route-grid .offer-card {
+  scroll-margin-top: calc(var(--nav-height) + 2rem);
+}
+
+.interactive-card {
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease,
+    scale 180ms ease,
+    transform 180ms ease;
+}
+
+.interactive-card:hover,
+.interactive-card:focus-visible,
+.interactive-card:focus-within {
+  z-index: 2;
+  border-color: var(--cyan);
+  background: var(--navy);
+  color: white;
+  box-shadow: var(--shadow);
+  scale: 1.025;
+  transform: translateY(-0.25rem);
+}
+
+.interactive-card:hover h3,
+.interactive-card:hover p,
+.interactive-card:hover .offer-number,
+.interactive-card:hover .type-title,
+.interactive-card:hover .type-desc,
+.interactive-card:hover a,
+.interactive-card:focus-visible .type-title,
+.interactive-card:focus-visible .type-desc,
+.interactive-card:focus-within h3,
+.interactive-card:focus-within p,
+.interactive-card:focus-within .offer-number,
+.interactive-card:focus-within a {
+  color: white;
+}
+
+.interactive-card-row:has(.interactive-card:hover) .interactive-card:not(:hover),
+.interactive-card-row:has(.interactive-card:focus-visible) .interactive-card:not(:focus-visible),
+.interactive-card-row:has(.interactive-card:focus-within) .interactive-card:not(:focus-within) {
+  opacity: 0.68;
+}
+
+.draw-border {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.draw-border rect {
+  fill: none;
+  stroke: var(--sage);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.form-status {
+  margin: 0;
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.form-submit-frame {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+.is-magnetic {
+  will-change: transform;
+}
+
+@media (min-width: 48rem) and (prefers-reduced-motion: no-preference) {
+  .day-night-grid {
+    position: relative;
+    display: grid;
+  }
+
+  .day-night-grid .comparison-card {
+    grid-area: 1 / 1;
+  }
+}
+
 .service-principle p {
+  color: white;
   font: 600 clamp(1.35rem, 3vw, 2rem)/1.35 var(--font-display);
+}
+
+.offer-links a,
+.portfolio-card a {
+  overflow-wrap: anywhere;
 }
 
 .portfolio-card {
